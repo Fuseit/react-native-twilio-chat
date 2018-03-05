@@ -146,7 +146,9 @@ public class RCTTwilioChatChannels extends ReactContextBaseJavaModule {
     }
     
     private Channels channels() {
-        return RCTTwilioChatClient.getInstance().client.getChannels();
+        if (RCTTwilioChatClient.getInstance().client != null) {
+            return RCTTwilioChatClient.getInstance().client.getChannels();
+        }
     }
     
     private void createListener(Channel channel) {
