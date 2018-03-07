@@ -67,11 +67,6 @@ public class RCTTwilioChatClient extends ReactContextBaseJavaModule implements C
         clientSyncStatus.put("Failed",ChatClient.SynchronizationStatus.FAILED.toString());
         constants.put("TCHClientSynchronizationStatus", clientSyncStatus);
 
-        Map<String, String> clientSyncStrategy = new HashMap<>();
-        clientSyncStrategy.put("All",ChatClient.SynchronizationStrategy.ALL.toString());
-        clientSyncStrategy.put("ChannelsList",ChatClient.SynchronizationStrategy.CHANNELS_LIST.toString());
-        constants.put("TCHClientSynchronizationStrategy", clientSyncStrategy);
-
         Map<String, String> channelOption = new HashMap<>();
         channelOption.put("FriendlyName", "friendlyName");
         channelOption.put("UniqueName", "uniqueName");

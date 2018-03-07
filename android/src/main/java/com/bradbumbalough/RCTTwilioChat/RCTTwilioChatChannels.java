@@ -70,9 +70,11 @@ public class RCTTwilioChatChannels extends ReactContextBaseJavaModule {
             }
             
             @Override
-            public void onMessageUpdated(Message message) {
+            public void onMessageUpdated(Message message, Message.UpdateReason updateReason) {
                 WritableMap map = Arguments.createMap();
                 map.putString("channelSid", channelSid);
+                map.putString("updateReasonName", updateReason.name());
+                map.putInt("updateReasonValue", updateReason.getValue());
                 map.putMap("message", RCTConvert.Message(message));
                 
                 sendEvent("chatClient:channel:messageChanged", map);
@@ -97,11 +99,12 @@ public class RCTTwilioChatChannels extends ReactContextBaseJavaModule {
             }
             
             @Override
-            public void onMemberUpdated(Member member) {
+            public void onMemberUpdated(Member member, Member.UpdateReason updateReason) {
                 WritableMap map = Arguments.createMap();
                 map.putString("channelSid", channelSid);
+                map.putInt("updateReasonValue", updateReason.getValue());
                 map.putMap("member", RCTConvert.Member(member));
-                
+
                 sendEvent("chatClient:channel:memberChanged", map);
             }
             

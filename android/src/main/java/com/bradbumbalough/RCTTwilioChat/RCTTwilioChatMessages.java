@@ -57,7 +57,7 @@ public class RCTTwilioChatMessages extends ReactContextBaseJavaModule {
             public void onSuccess(Messages messages) {
                 Long lastConsumedMessageIndex = messages.getLastConsumedMessageIndex();
                 if (lastConsumedMessageIndex != null) {
-                    promise.resolve(Integer.valueOf(lastConsumedMessageIndex.intValue()));
+                    promise.resolve(lastConsumedMessageIndex.intValue());
                 } else {
                     promise.resolve(null);
                 }
@@ -68,6 +68,7 @@ public class RCTTwilioChatMessages extends ReactContextBaseJavaModule {
     @ReactMethod
     public void sendMessage(String channelSid, final String body, final ReadableMap attributes, final Promise promise) {
         loadMessagesFromChannelSid(channelSid, new CallbackListener<Messages>() {
+
             @Override
             public void onError(ErrorInfo errorInfo) {
                 super.onError(errorInfo);
@@ -76,39 +77,26 @@ public class RCTTwilioChatMessages extends ReactContextBaseJavaModule {
 
             @Override
             public void onSuccess(final Messages messages) {
-                final Message newMessage = messages.createMessage(body);
-
-                final StatusListener sendListener = new StatusListener() {
-                  @Override
-                  public void onError(ErrorInfo errorInfo) {
-                      super.onError(errorInfo);
-                      promise.reject("send-message-error","Error occurred while attempting to sendMessage.");
-                  }
-
-                  @Override
-                  public void onSuccess() {
-                      promise.resolve(true);
-                  }
-                };
-
                 if(attributes != null) {
                   final JSONObject json = RCTConvert.readableMapToJson(attributes);
-                  newMessage.setAttributes(json, new StatusListener() {
-                      @Override
-                      public void onSuccess() {
-                          messages.sendMessage(newMessage, sendListener);
-                      }
-
-                      @Override
-                      public void onError(ErrorInfo errorInfo) {
-                          super.onError(errorInfo);
-                          promise.reject("send-attributed-message-error","Error occurred while attempting to set attributes in sendAttributedMessage.");
-                      }
-                  });
+                  messages.sendMessage(Message.options().withBody(body).withAttributes(json), sendListener);
                 } else {
-                  messages.sendMessage(body, sendListener);
+                  messages.sendMessage(Message.options().withBody(body), sendListener);
                 }
             }
+
+            CallbackListener<Message> sendListener = new CallbackListener<Message>() {
+                @Override
+                public void onSuccess(Message message) {
+                    promise.resolve(true);
+                }
+
+                @Override
+                public void onError(ErrorInfo errorInfo) {
+                    super.onError(errorInfo);
+                    promise.reject("send-attributed-message-error","Error occurred while attempting to set attributes in sendAttributedMessage.");
+                }
+            };
         });
     }
 
