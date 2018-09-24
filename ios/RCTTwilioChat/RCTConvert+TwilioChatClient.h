@@ -6,6 +6,7 @@
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 #import <TwilioChatClient/TwilioChatClient.h>
+#import <TwilioChatClient/TCHUser.h>
 #import <TwilioAccessManager/TwilioAccessManager.h>
 #import <React/RCTConvert.h>
 
@@ -31,13 +32,11 @@
 
 + (NSDictionary *)TCHMemberPaginator:(TCHMemberPaginator *)paginator;
 + (NSDictionary *)TCHChannelDescriptorPaginator:(TCHChannelDescriptorPaginator *)paginator;
-+ (NSDictionary *)TCHUserDescriptorPaginator:(TCHUserDescriptorPaginator *)paginator;
 
 + (NSArray *)TCHChannels:(NSArray<TCHChannel *>*)channels;
 + (NSArray *)TCHChannelDescriptors:(NSArray<TCHChannelDescriptor *>*)channels;
 + (NSArray *)TCHMembers:(NSArray<TCHMember *>*)members;
 + (NSArray *)TCHMessages:(NSArray<TCHMessage *> *)messages;
-+ (NSArray *)TCHUserDescriptors:(NSArray<TCHUserDescriptor *>*)users;
 
 + (NSData *)dataWithHexString:(NSString*)hex;
 

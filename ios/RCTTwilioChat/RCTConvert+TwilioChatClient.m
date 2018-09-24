@@ -77,8 +77,9 @@ RCT_ENUM_CONVERTER(TCHClientConnectionState,(@{
   if (!client) {
     return RCTNullIfNil(nil);
   }
+  NSDictionary* user = [self TCHUser:client.user];
   return @{
-           @"user": [self TCHUser:client.user],
+           @"userInfo": user,
            @"synchronizationStatus": @(client.synchronizationStatus),
            @"version": client.version,
            @"isReachabilityEnabled": @(client.isReachabilityEnabled)
@@ -92,7 +93,7 @@ RCT_ENUM_CONVERTER(TCHClientConnectionState,(@{
   }
   return @{
            @"identity": user.identity,
-           @"friendlyName": user.friendlyName,
+           @"friendlyName": RCTNullIfNil(user.friendlyName),
            @"attributes": RCTNullIfNil(user.attributes),
            @"isOnline": @(user.isOnline),
            @"isNotifiable": @(user.isNotifiable)
@@ -100,16 +101,16 @@ RCT_ENUM_CONVERTER(TCHClientConnectionState,(@{
 }
 
 + (NSDictionary *)TCHUserDescriptor:(TCHUserDescriptor *)user {
-  if (!user) {
-    return RCTNullIfNil(nil);
-  }
-  return @{
-           @"identity": user.identity,
-           @"friendlyName": user.friendlyName,
-           @"attributes": RCTNullIfNil(user.attributes),
-           @"isOnline": @(user.isOnline),
-           @"isNotifiable": @(user.isNotifiable)
-           };
+    if (!user) {
+        return RCTNullIfNil(nil);
+    }
+    return @{
+             @"identity": user.identity,
+             @"friendlyName": RCTNullIfNil(user.friendlyName),
+             @"attributes": RCTNullIfNil(user.attributes),
+             @"isOnline": @(user.isOnline),
+             @"isNotifiable": @(user.isNotifiable)
+             };
 }
 
 + (NSDictionary *)TCHMessage:(TCHMessage *)message {
@@ -117,15 +118,15 @@ RCT_ENUM_CONVERTER(TCHClientConnectionState,(@{
     return RCTNullIfNil(nil);
   }
   return @{
-           @"sid": message.sid,
-           @"index": message.index,
-           @"author": message.author,
-           @"body": message.body,
-           @"timestamp": message.timestamp,
+           @"sid": RCTNullIfNil(message.sid),
+           @"index": RCTNullIfNil(message.index),
+           @"author": RCTNullIfNil(message.author),
+           @"body": RCTNullIfNil(message.body),
+           @"timestamp": RCTNullIfNil(message.timestamp),
            @"timestampAsDate": @(message.timestampAsDate.timeIntervalSince1970 * 1000),
-           @"dateUpdated": message.dateUpdated,
+           @"dateUpdated": RCTNullIfNil(message.dateUpdated),
            @"dateUpdatedDate": @(message.dateUpdatedAsDate.timeIntervalSince1970 * 1000),
-           @"lastUpdatedBy": message.lastUpdatedBy,
+           @"lastUpdatedBy": RCTNullIfNil(message.lastUpdatedBy),
            @"attributes": RCTNullIfNil(message.attributes)
            };
 }
@@ -135,7 +136,7 @@ RCT_ENUM_CONVERTER(TCHClientConnectionState,(@{
     return RCTNullIfNil(nil);
   }
   return @{
-           @"identity": RCTNullIfNil(member.identity),
+           @"identity": member.identity,
            @"lastConsumedMessageIndex": RCTNullIfNil(member.lastConsumedMessageIndex),
            @"lastConsumptionTimestamp": RCTNullIfNil(member.lastConsumptionTimestamp)
            };
@@ -146,17 +147,17 @@ RCT_ENUM_CONVERTER(TCHClientConnectionState,(@{
     return RCTNullIfNil(nil);
   }
   return @{
-           @"sid": channel.sid,
-           @"friendlyName": channel.friendlyName,
-           @"uniqueName": channel.uniqueName,
-           @"status": @(channel.status),
-           @"type": @(channel.type),
-           @"attributes": RCTNullIfNil(channel.attributes),
-           @"synchronizationStatus": @(channel.synchronizationStatus),
-           @"dateCreated": channel.dateCreated,
-           @"dateUpdated": channel.dateUpdated,
-           @"createdBy": channel.createdBy
-           };
+               @"sid": channel.sid,
+               @"friendlyName": RCTNullIfNil(channel.friendlyName),
+               @"uniqueName": RCTNullIfNil(channel.uniqueName),
+               @"status": RCTNullIfNil(@(channel.status)),
+               @"type": RCTNullIfNil(@(channel.type)),
+               @"attributes": RCTNullIfNil(channel.attributes),
+               @"synchronizationStatus": @(channel.synchronizationStatus),
+               @"dateCreated": RCTNullIfNil(channel.dateCreated),
+               @"dateUpdated": RCTNullIfNil(channel.dateUpdated),
+               @"createdBy": RCTNullIfNil(channel.createdBy)
+               };
 }
 
 + (NSDictionary *)TCHChannelDescriptor:(TCHChannelDescriptor *)channel {
@@ -220,17 +221,6 @@ RCT_ENUM_CONVERTER(TCHClientConnectionState,(@{
   return response;
 }
 
-+ (NSArray *)TCHUserDescriptors:(NSArray<TCHUserDescriptor *>*)users {
-  if (!users) {
-    return RCTNullIfNil(nil);
-  }
-  NSMutableArray *response = [NSMutableArray array];
-  for (TCHUserDescriptor *user in users) {
-    [response addObject:[self TCHUserDescriptor:user]];
-  }
-  return response;
-}
-
 + (NSDictionary *)TCHMemberPaginator:(TCHMemberPaginator *)paginator {
     if (!paginator) {
         return RCTNullIfNil(nil);
@@ -249,16 +239,6 @@ RCT_ENUM_CONVERTER(TCHClientConnectionState,(@{
              @"hasNextPage": @(paginator.hasNextPage),
              @"items": [self TCHChannelDescriptors:paginator.items]
              };
-}
-
-+ (NSDictionary *)TCHUserDescriptorPaginator:(TCHUserDescriptorPaginator *)paginator {
-  if (!paginator) {
-    return RCTNullIfNil(nil);
-  }
-  return @{
-           @"hasNextPage": @(paginator.hasNextPage),
-           @"items": [self TCHUserDescriptors:paginator.items]
-           };
 }
 
 + (NSData *)dataWithHexString:(NSString *)hex {
