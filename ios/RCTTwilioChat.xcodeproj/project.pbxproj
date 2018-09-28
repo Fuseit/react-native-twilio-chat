@@ -284,6 +284,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited}";
 				PRODUCT_NAME = RCTTwilioChat;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -303,6 +304,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited}";
 				PRODUCT_NAME = RCTTwilioChat;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
